@@ -102,6 +102,7 @@ namespace JiraParser
                 foreach (var td in issue_td)
                 {
 
+
                     //Console.WriteLine(img.ToHtml());
                     idx = idx + 1;
 
