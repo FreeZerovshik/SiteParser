@@ -13,7 +13,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 
-
 namespace JiraParser
 {
     class Program
@@ -30,7 +29,9 @@ namespace JiraParser
         static string issue_ctrl;
 
         static string f_name;
-        static string out_str;
+
+        // заполним заголовок
+        static string out_str = "Тип запроса;" + "Приоритет;" + "Код;" + "Исполнитель;" + "Обновлен;" + "Контр.время;" + "Тема;" + "Описание;" + System.Environment.NewLine;
 
         static void Main(string[] args)
         {
@@ -73,7 +74,8 @@ namespace JiraParser
 
              
                 var idx = new int();
-                 var issue_img = item.QuerySelectorAll("img");
+                var issue_img = item.QuerySelectorAll("img");
+
 
                 // получим все теги с картинками
                 foreach (var img in issue_img)
@@ -92,21 +94,17 @@ namespace JiraParser
                     
                  }
 
-                
+
+                // пробежимся по ячейкам таблицы
                 var issue_td = item.QuerySelectorAll("td");
                 idx = 0;
 
-                // заполним заголовок
-                out_str = "Тип запроса;" + "Приоритет" + ";" + "Код" + ";" + "Исполнитель" + ";" + "Обновлен" + ";" + ";" + "Контр.время" + "; " + "Тема" + ";" + "Описание" + ";" + System.Environment.NewLine;
-
                 foreach (var td in issue_td)
                 {
-
-
-                    //Console.WriteLine(img.ToHtml());
+                     //Console.WriteLine(img.ToHtml());
                     idx = idx + 1;
 
-                    if (idx == 3) // Номер
+                    if (idx == 3) // код
                     {
                         issue_num = td.Text().Trim();
                     }
@@ -117,7 +115,7 @@ namespace JiraParser
                     else if (idx == 5) // Наименование
                     {
                         issue_name = td.Text().Trim();
-                        issue_name = Regex.Replace(issue_name, @"\t|\n|\r", "");
+                        issue_name = Regex.Replace(issue_name, @"\t|\n|\r|;", "");
                     }
                     else if (idx == 6) // Обновлен
                     {
@@ -125,21 +123,27 @@ namespace JiraParser
                     }
                     else if (idx == 7) // Контр. время
                     {
-                        issue_ctrl = Regex.Replace(td.Text().Trim(), @"\t|\n|\r", "");
+                        issue_ctrl = Regex.Replace(td.Text().Trim(), @"\t|\n|\r|;", "");
                     }
                     else if (idx == 8) // Наименование
                     {
-                        issue_desc = td.Text().Trim();
-                        issue_desc =  Regex.Replace(issue_desc, @"\t|\n|\r", "");
+                        issue_desc =  Regex.Replace(td.Text().Trim(), @"\t|\n|\r|;", "");
                     }
-
                     //Console.WriteLine(idx);
 
                 }
 
 
 
-                issue_str += issue_type + ";" + issue_prior + ";" + issue_num + ";" + issue_assignee + ";" + issue_update + ";" + ";" + issue_ctrl + ";" + issue_name + ";" + issue_desc + ";" + System.Environment.NewLine;
+                issue_str += issue_type + ";" + 
+                            issue_prior + ";" + 
+                            issue_num + ";" + 
+                            issue_assignee + ";" + 
+                            issue_update + ";" + 
+                            issue_ctrl + ";" + 
+                            issue_name + ";" + 
+                            issue_desc + ";" + 
+                            System.Environment.NewLine;
 
                 //Console.WriteLine(issue_str);
                 // вывод текста из HTML
@@ -158,7 +162,7 @@ namespace JiraParser
             try
             {
                 out_str += issue_str;
-                System.IO.File.WriteAllText(@".\\"+DateTime.Now.ToString("yyyy_MM_dd_h_mm_ss_") + f_name+".csv", out_str, Encoding.GetEncoding("Windows-1251"));
+                System.IO.File.WriteAllText(@".\\"+DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss_") + f_name+".csv", out_str, Encoding.GetEncoding("Windows-1251"));
             } catch ( System.IO.IOException ex)
             {
                 Console.WriteLine("Невозможно сохранить в файл: parse.csv. Закройте файл и повторите запуск приложения!");
