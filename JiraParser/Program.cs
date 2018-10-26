@@ -31,7 +31,14 @@ namespace JiraParser
         static string f_name;
 
         // заполним заголовок
-        static string out_str = "Тип запроса;" + "Приоритет;" + "Код;" + "Исполнитель;" + "Обновлен;" + "Контр.время;" + "Тема;" + "Описание;" + System.Environment.NewLine;
+        static string out_str = "Тип запроса;" + 
+                                "Приоритет;" + 
+                                "Код;" + 
+                                "Исполнитель;" +
+                                "Тема;" +
+                                "Обновлен;" + 
+                                "Контр.время;" + 
+                                "Описание;" + System.Environment.NewLine;
 
         static void Main(string[] args)
         {
@@ -41,10 +48,11 @@ namespace JiraParser
                 f_name = args[0];
             } else
             {
-                f_name = "1.htm";
+                f_name = "j.htm";
             }
 
-   
+            Console.WriteLine("Запуск разбора файла: " + f_name);
+
             if (File.Exists(f_name) == false)
             {
                 Console.WriteLine("Ошибка: HTML файл"+ f_name  + " не найден");
@@ -138,10 +146,10 @@ namespace JiraParser
                 issue_str += issue_type + ";" + 
                             issue_prior + ";" + 
                             issue_num + ";" + 
-                            issue_assignee + ";" + 
+                            issue_assignee + ";" +
+                            issue_name + ";" +
                             issue_update + ";" + 
                             issue_ctrl + ";" + 
-                            issue_name + ";" + 
                             issue_desc + ";" + 
                             System.Environment.NewLine;
 
